@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@300;400;500&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+    <title>Keyboard Shooter</title>
+  </head>
+  <body>
+    <header class="game-header">
+      <div class="timer">
+        <span>time</span>
+        <span>00</span>
+      </div>
+      <p class="start-text">Press Enter to play!</p>
+      <div class="score">
+        <span>score</span>
+        <span>0</span>
+      </div>
+    </header>
+
+    <ul class="container"></ul>
+
+    <div class="endgame">
+      <p>
+        Congratulations! You have reached
+        <span class="final-score">0</span> points.
+      </p>
+      <form>
+        <label for="username">Put my name on the Wall of Fame :</label>
+        <input
+          type="text"
+          placeholder="Enter your name here"
+          maxlength="20"
+          id="username"
+        />
+        <input type="submit" id="save-score-button" value="Save" />
+      </form>
+      <ul class="leaderboard"></ul>
+    </div>
+    <!-- Following part displayed through media query -->
+    <div class="not-supported">
+      <p>
+        Sorry, this game is not available on mobile devices. We invite you to
+        come back with a computer.
+      </p>
+      <div class="heart">
+        <div class="left"></div>
+        <div class="right"></div>
+      </div>
+    </div>
+    <!--  -->
+    <script src="app.js"></script>
+  </body>
+</html>

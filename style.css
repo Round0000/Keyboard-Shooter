@@ -1,0 +1,266 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: "Roboto Slab", serif;
+  min-width: max-content;
+  color: #333;
+}
+
+.not-supported {
+  display: none;
+}
+
+.game-header {
+  display: flex;
+  justify-content: space-between;
+  max-width: 600px;
+  margin: auto;
+  align-items: center;
+}
+
+.start-text {
+  font-size: 1.5rem;
+  font-weight: 500;
+  animation: start-text 1s infinite ease-in-out;
+}
+
+@keyframes start-text {
+  50% {
+    transform: translateY(3px);
+  }
+}
+
+.timer,
+.score {
+  margin: 20px;
+  width: 4em;
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  font-size: 1.25rem;
+  transition: all 0.5s;
+}
+
+.game-header span:last-child {
+  color: #fcbf49;
+  font-size: 2rem;
+  border: 4px solid #f9dcc4;
+  background-color: #222;
+}
+
+.combo-x2 {
+  transform: scale(1.15);
+  position: relative;
+}
+.combo-x2 span:last-child {
+  color: #70e000;
+  border-color: #99d98c;
+  box-shadow: 0 4px 6px #aaa;
+}
+
+.combo-x2::after,
+.combo-x4::after {
+  position: absolute;
+  display: flex;
+  font-family: "Comic Sans MS", "Comic Neue", cursive;
+  transform: rotate(-10deg);
+  justify-content: center;
+  align-items: center;
+  width: max-content;
+  height: 50%;
+  left: 110%;
+  bottom: 10%;
+}
+
+.combo-x2::after {
+  content: "x2 !";
+  color: #38b000;
+}
+
+.combo-x4 {
+  transform: scale(1.3);
+  position: relative;
+}
+.combo-x4 span:last-child {
+  color: #f94144;
+  border-color: #df7373;
+  box-shadow: 0 7px 8px #aaa;
+}
+.combo-x4::after {
+  content: "x4 !!!";
+  color: #f94144;
+}
+
+.container {
+  list-style: none;
+  padding: 20px;
+  max-width: max-content;
+  height: max-content;
+  display: grid;
+  gap: 4px;
+  margin: 20px auto;
+  grid-template-columns: repeat(10, 56px);
+  grid-template-rows: repeat(3, 48px);
+}
+
+.container li {
+  background-color: #fafafa;
+  box-shadow: 0 2px 5px #888, 1px 5px 3px #ccc;
+  border-radius: 5px;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 26px;
+  color: #658575;
+}
+
+.container .bad {
+  font-family: "Comic Sans MS", "Comic Neue", cursive;
+  font-weight: bold;
+  color: crimson;
+}
+
+.endgame {
+  margin: auto;
+  /* display: flex; */
+  display: none;
+  gap: 1em;
+  padding: 2em;
+  flex-direction: column;
+  align-items: center;
+  font-size: 1.25rem;
+}
+
+.endgame form {
+  background-color: #222;
+  padding: 0.5em 1em;
+  border-radius: 6px;
+  filter: drop-shadow(1px 3px 2px #666);
+}
+
+.endgame form label {
+  color: #fafafa;
+  font-size: 1rem;
+  font-weight: 300;
+}
+
+.endgame #username {
+  all: unset;
+  background-color: #fafafa;
+  padding: 0.3em 0.4em;
+  display: block;
+  margin: 0.5em auto;
+  font-size: 1.25rem;
+}
+
+.endgame #username:focus {
+  outline: 2px solid #fcbf49;
+  outline-offset: 2px;
+}
+
+#save-score-button {
+  all: unset;
+  background-color: #fafafa;
+  font-size: 1rem;
+  display: block;
+  border: 2px solid #222;
+  border-radius: 5px;
+  background-color: #a9d6e5;
+  padding: 0.3em 0.8em;
+  margin: 1em 0 -1.5em auto;
+  cursor: pointer;
+}
+
+#save-score-button:focus {
+  outline: 2px solid #fcbf49;
+}
+
+.final-score {
+  color: crimson;
+  font-weight: bold;
+}
+
+/* Animations */
+.anim-wrong-key {
+  animation: anim-wrong-key 0.1s 3;
+}
+
+@keyframes anim-wrong-key {
+  25% {
+    transform: rotate(2deg) translateX(2px);
+  }
+  75% {
+    transform: rotate(-2deg) translateX(-2px);
+  }
+}
+
+.anim-right-key {
+  animation: anim-right-key 0.2s forwards;
+}
+
+@keyframes anim-right-key {
+  to {
+    transform: scale(0);
+  }
+}
+
+.fade-out {
+  animation: fade-out 0.5s forwards;
+}
+
+@keyframes fade-out {
+  to {
+    opacity: 0;
+    display: none;
+  }
+}
+
+/* Media query */
+@media (max-width: 640px) {
+  body {
+    min-width: initial;
+  }
+
+  .game-header,
+  .container,
+  .endgame {
+    display: none !important;
+  }
+
+  .not-supported {
+    display: block;
+    text-align: center;
+    padding: 2em;
+  }
+
+  .heart {
+    width: 100px;
+    margin: 2em auto;
+    position: relative;
+    animation: heart infinite both ease-in-out 1s;
+  }
+
+  .heart div {
+    position: absolute;
+    width: 60px;
+    height: 100px;
+    background-color: pink;
+  }
+
+  .left {
+    transform: rotate(-45deg);
+    left: 5px;
+    border-radius: 50px 50px 0 0;
+  }
+
+  .right {
+    transform: rotate(45deg);
+    right: 5px;
+    border-radius: 50px 50px 0 0;
+  }
+}
