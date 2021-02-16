@@ -1,3 +1,25 @@
+const scores = db.collection("keyboard-shooter");
+
+function callLeaderboard() {
+  scores
+    .orderBy("score", "desc")
+    .limit(20)
+    .get()
+    .then((snapshot) => {
+      snapshot.docs.forEach((score) => {
+        const html = `
+    <li>
+      <span class="leaderboard-score">${score.data().score}</span>
+      <span class="leaderboard-name">${score.data().name}</span>
+    </li>
+    `;
+        leaderboard.innerHTML += html;
+      });
+    });
+  leaderboard.parentElement.style.display = "initial";
+  nameSubmit.style.display = "none";
+}
+
 const alphabet = [
   "A",
   "B",
@@ -26,6 +48,7 @@ const alphabet = [
   "Y",
   "Z",
 ];
+
 const timerUI = document.querySelector(".timer span:last-child");
 const scoreUI = document.querySelector(".score span:last-child");
 const container = document.querySelector(".container");
@@ -33,6 +56,9 @@ const header = document.querySelector(".game-header");
 const startText = document.querySelector(".start-text");
 const endgame = document.querySelector(".endgame");
 const finalScore = document.querySelector(".final-score");
+const leaderboard = document.querySelector(".leaderboard");
+const nameSubmit = document.querySelector(".endgame form");
+const restart = document.querySelector("#restart");
 let letters;
 
 let gameIsOn = false;
@@ -44,15 +70,18 @@ document.addEventListener("keyup", (e) => {
   if (pressedKey === "ENTER" && !gameIsOn) {
     startText.classList.add("fade-out");
     fillAlphabet();
-    gameIsOn = true;
-    timer(1);
     updateUI(document.querySelector(".bad"));
+    gameIsOn = true;
+    timer(30);
   } else if (alphabet.includes(pressedKey) && gameIsOn) {
     checkKeyNature(pressedKey);
   }
 });
 
 const fillAlphabet = () => {
+  container.innerHTML = "";
+  container.classList.remove("fade-out");
+  container.style.display = "grid";
   alphabet.forEach((letter) => {
     const li = document.createElement("LI");
     li.innerText = letter;
@@ -105,13 +134,27 @@ function timer(max) {
   function countdown() {
     if (time === 1) {
       clearInterval(inter);
-      gameIsOn = false;
+
       container.classList.add("fade-out");
       header.classList.add("fade-out");
-      container.style.display = "none";
-      header.style.display = "none";
-      endgame.style.display = "flex";
-      finalScore.innerText = score;
+      setTimeout(() => {
+        container.style.display = "none";
+        header.style.display = "none";
+
+        endgame.classList.remove("fade-out");
+        endgame.style.display = "flex";
+
+        finalScore.innerText = score;
+
+        gameIsOn = false;
+
+        if (score > 0) {
+          nameSubmit.style.display = "initial";
+          nameSubmit.classList.remove("fade-out");
+        } else {
+          callLeaderboard();
+        }
+      }, 500);
     } else {
       time--;
       timerUI.innerText = time;
@@ -132,3 +175,46 @@ const combo = () => {
     score++;
   }
 };
+
+// Submit name to Leaderboard
+nameSubmit.addEventListener("submit", (e) => {
+  e.preventDefault();
+
+  addScore(e.target.username.value.trim(), score);
+  e.target.reset();
+  e.target.classList.add("fade-out");
+});
+
+async function addScore(name, score) {
+  const newScore = {
+    name,
+    score,
+  };
+  await scores.add(newScore);
+  callLeaderboard();
+}
+
+restart.addEventListener("click", (e) => {
+  e.preventDefault();
+
+  score = 0;
+  scoreUI.innerText = score;
+  timerUI.innerText = "--";
+  comboCount = 0;
+  endgame.classList.add("fade-out");
+  setTimeout(() => {
+    endgame.style.display = "none";
+    header.classList.remove("fade-out");
+    header.style.display = "flex";
+    startText.classList.remove("fade-out");
+    startText.style.display = "block";
+    leaderboard.parentElement.style.display = "none";
+    leaderboard.innerHTML = "";
+  }, 200);
+});
+
+// Debug this garbage !
+// setInterval(showScore, 1000);
+// function showScore() {
+//   console.log(`Hey, the score is ${score}`);
+// }

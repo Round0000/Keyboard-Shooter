@@ -20,7 +20,7 @@
     <header class="game-header">
       <div class="timer">
         <span>time</span>
-        <span>00</span>
+        <span>--</span>
       </div>
       <p class="start-text">Press Enter to play!</p>
       <div class="score">
@@ -36,6 +36,7 @@
         Congratulations! You have reached
         <span class="final-score">0</span> points.
       </p>
+      <button id="restart">Play again</button>
       <form>
         <label for="username">Put my name on the Wall of Fame :</label>
         <input
@@ -46,8 +47,12 @@
         />
         <input type="submit" id="save-score-button" value="Save" />
       </form>
-      <ul class="leaderboard"></ul>
+      <div class="leaderboard-container">
+        <h2>Wall of Fame</h2>
+        <ul class="leaderboard"></ul>
+      </div>
     </div>
+
     <!-- Following part displayed through media query -->
     <div class="not-supported">
       <p>
@@ -60,6 +65,32 @@
       </div>
     </div>
     <!--  -->
+    <!-- The core Firebase JS SDK is always required and must be listed first -->
+    <script src="https://www.gstatic.com/firebasejs/8.2.7/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.2.7/firebase-firestore.js"></script>
+
+    <!-- TODO: Add SDKs for Firebase products that you want to use
+     https://firebase.google.com/docs/web/setup#available-libraries -->
+    <script src="https://www.gstatic.com/firebasejs/8.2.7/firebase-analytics.js"></script>
+
+    <script>
+      // Your web app's Firebase configuration
+      // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+      var firebaseConfig = {
+        apiKey: "AIzaSyDHLuL93Qdd9HxHOqLAq00NfTW5PnHV-_8",
+        authDomain: "roundmidnightworkshop.firebaseapp.com",
+        projectId: "roundmidnightworkshop",
+        storageBucket: "roundmidnightworkshop.appspot.com",
+        messagingSenderId: "20656621361",
+        appId: "1:20656621361:web:c2b4342d3b41057d2a1210",
+        measurementId: "G-FP843MWRSN",
+      };
+      // Initialize Firebase
+      firebase.initializeApp(firebaseConfig);
+      firebase.analytics();
+
+      db = firebase.firestore();
+    </script>
     <script src="app.js"></script>
   </body>
 </html>

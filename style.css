@@ -140,7 +140,8 @@ body {
   background-color: #222;
   padding: 0.5em 1em;
   border-radius: 6px;
-  filter: drop-shadow(1px 3px 2px #666);
+  box-shadow: 1px 3px 2px #666;
+  margin-top: 2em;
 }
 
 .endgame form label {
@@ -174,15 +175,104 @@ body {
   padding: 0.3em 0.8em;
   margin: 1em 0 -1.5em auto;
   cursor: pointer;
-}
-
-#save-score-button:focus {
-  outline: 2px solid #fcbf49;
+  box-shadow: 0 3px 2px #666;
+  transition: all 0.2s;
 }
 
 .final-score {
   color: crimson;
   font-weight: bold;
+}
+
+#restart {
+  all: unset;
+  width: 100px;
+  padding: 0.5em 1em;
+  border-radius: 6px;
+  background-color: #a9d6e5;
+  color: #222;
+  box-shadow: 0 3px 2px #666;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+#restart:focus,
+#restart:hover,
+#save-score-button:focus,
+#save-score-button:hover {
+  background-color: #fcbf49;
+  transform: translateY(2px);
+  box-shadow: 0 1px 1px #666;
+}
+
+/* Leaderboard */
+.leaderboard {
+  list-style: none;
+  width: 300px;
+}
+
+.leaderboard-container {
+  margin: 2em;
+  display: none;
+}
+
+.leaderboard-container h2 {
+  font-size: 1.5rem;
+  margin-bottom: 0.5em;
+  text-align: center;
+}
+
+.leaderboard li {
+  display: flex;
+  font-size: 1rem;
+  border: 1px solid #22222255;
+
+  border-radius: 5px;
+  margin-bottom: 2px;
+  position: relative;
+}
+
+.leaderboard li::before {
+  content: "";
+  position: absolute;
+  height: 1.5em;
+  width: 1.5em;
+  right: 102%;
+  align-self: center;
+  border-radius: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.leaderboard li:first-of-type::before {
+  background-color: #c9b03788;
+  content: "1";
+}
+
+.leaderboard li:nth-of-type(2)::before {
+  background-color: #b4b4b488;
+  content: "2";
+}
+.leaderboard li:nth-of-type(3)::before {
+  background-color: #ad8a5688;
+  content: "3";
+}
+
+.leaderboard li:nth-of-type(odd) {
+  background-color: #f8f8f8;
+}
+
+.leaderboard-score {
+  font-weight: bold;
+  width: 4ch;
+  text-align: right;
+
+  border-right: 2px dashed #aaa;
+}
+
+.leaderboard li span {
+  padding: 6px;
 }
 
 /* Animations */
@@ -210,7 +300,7 @@ body {
 }
 
 .fade-out {
-  animation: fade-out 0.5s forwards;
+  animation: fade-out 0.3s forwards;
 }
 
 @keyframes fade-out {
@@ -221,7 +311,7 @@ body {
 }
 
 /* Media query */
-@media (max-width: 640px) {
+@media (max-width: 832px) {
   body {
     min-width: initial;
   }
