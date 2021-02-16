@@ -62,16 +62,18 @@ const restart = document.querySelector("#restart");
 let letters;
 
 let gameIsOn = false;
+let readyToStart = true;
 let score = 0;
 let comboCount = 0;
 
 document.addEventListener("keyup", (e) => {
   const pressedKey = e.key.toUpperCase();
-  if (pressedKey === "ENTER" && !gameIsOn) {
+  if (pressedKey === "ENTER" && !gameIsOn && readyToStart) {
     startText.classList.add("fade-out");
     fillAlphabet();
     updateUI(document.querySelector(".bad"));
     gameIsOn = true;
+    readyToStart = false;
     timer(30);
   } else if (alphabet.includes(pressedKey) && gameIsOn) {
     checkKeyNature(pressedKey);
@@ -201,6 +203,7 @@ restart.addEventListener("click", (e) => {
   scoreUI.innerText = score;
   timerUI.innerText = "--";
   comboCount = 0;
+  scoreUI.parentElement.classList.remove("combo-x2", "combo-x4");
   endgame.classList.add("fade-out");
   setTimeout(() => {
     endgame.style.display = "none";
@@ -210,6 +213,7 @@ restart.addEventListener("click", (e) => {
     startText.style.display = "block";
     leaderboard.parentElement.style.display = "none";
     leaderboard.innerHTML = "";
+    readyToStart = true;
   }, 200);
 });
 
