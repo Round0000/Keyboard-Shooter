@@ -8,10 +8,38 @@ body {
   font-family: "Roboto Slab", serif;
   min-width: max-content;
   color: #333;
+  transition: all 0.5s;
 }
 
 .not-supported {
   display: none;
+}
+
+.darkmodetoggle {
+  display: flex;
+  margin: auto;
+  justify-content: center;
+  border-radius: 50%;
+  border: 2px solid #222;
+  background-color: #f9dcc4;
+  transition: all 0.5s;
+  opacity: 0.8;
+}
+
+.darkmodetoggle:hover {
+  opacity: 1;
+}
+
+.darkmodetoggle:not(:focus-visible) {
+  outline: none;
+}
+
+.rotate {
+  transform: rotate(360deg);
+}
+
+.darkmodetoggle img {
+  margin: 6px;
 }
 
 .game-header {
@@ -357,4 +385,56 @@ body {
     right: 5px;
     border-radius: 50px 50px 0 0;
   }
+}
+
+/* Below is the dark mode styling */
+body.darkmode {
+  background-color: #151515;
+  color: #fafafa;
+}
+
+body.darkmode .container li {
+  background-color: #333;
+  box-shadow: 0 3px 2px #666;
+  color: #eafad0;
+}
+
+body.darkmode .bad {
+  color: rgb(255, 94, 83) !important;
+}
+
+body.darkmode .final-score {
+  color: rgb(255, 94, 83);
+}
+
+body.darkmode .endgame form {
+  background-color: #333;
+  color: #222;
+  box-shadow: 0 3px 4px black;
+}
+
+body.darkmode #save-score-button,
+body.darkmode #restart {
+  box-shadow: 0 2px 3px -2px black;
+}
+
+body.darkmode #restart:hover,
+body.darkmode #restart:focus,
+body.darkmode #save-score-button:hover,
+body.darkmode #save-score-button:focus {
+  box-shadow: 0 1px 2px -2px black;
+}
+
+body.darkmode .leaderboard li:nth-of-type(odd) {
+  background-color: #383838;
+}
+body.darkmode .leaderboard li:nth-of-type(even) {
+  background-color: #323232;
+}
+
+body.darkmode .combo-x2 span:last-child {
+  box-shadow: 0 3px 3px #444;
+}
+body.darkmode .combo-x4 span:last-child {
+  box-shadow: 0 4px 4px #333;
 }

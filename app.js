@@ -1,11 +1,3 @@
-function play() {
-  resetGame();
-  document.location.reload();
-  securedScore.delete();
-}
-
-window.addEventListener("focus", play);
-
 const scores = db.collection("keyboard-shooter");
 const current = db.collection("keyboard-shooter-current");
 
@@ -38,24 +30,50 @@ const alphabet = [
   "Z",
 ];
 
+const darkModeToggle = document.querySelector(".darkmodetoggle");
 const timerUI = document.querySelector(".timer span:last-child");
 const scoreUI = document.querySelector(".score span:last-child");
 const container = document.querySelector(".container");
 const header = document.querySelector(".game-header");
 const startText = document.querySelector(".start-text");
 const endgame = document.querySelector(".endgame");
-const finalScore = document.querySelector(".final-score");
+const endgameText = document.querySelector(".endgame-text");
 const leaderboard = document.querySelector(".leaderboard");
 const nameSubmit = document.querySelector(".endgame form");
 const restart = document.querySelector("#restart");
 let letters;
 
+let darkMode = false;
 let gameIsOn = false;
 let readyToStart = true;
 let score = 0;
 let comboCount = 0;
 const currentPlayer = random(999);
 const securedScore = current.doc(`${currentPlayer}`);
+
+function play() {
+  resetGame();
+  document.location.reload();
+  securedScore.delete();
+}
+
+window.addEventListener("focus", play);
+
+darkModeToggle.addEventListener("click", () => {
+  const toggleIcon = darkModeToggle.querySelector("img");
+
+  if (!darkMode) {
+    darkMode = true;
+    document.querySelector("body").classList.add("darkmode");
+    darkModeToggle.classList.toggle("rotate");
+    toggleIcon.setAttribute("src", "./img/sun.svg");
+  } else {
+    darkMode = false;
+    document.querySelector("body").classList.remove("darkmode");
+    darkModeToggle.classList.toggle("rotate");
+    toggleIcon.setAttribute("src", "./img/moon.svg");
+  }
+});
 
 function callLeaderboard() {
   scores
@@ -92,11 +110,13 @@ document.addEventListener("keyup", (e) => {
   const pressedKey = e.key.toUpperCase();
   if (pressedKey === "ENTER" && !gameIsOn && readyToStart) {
     startText.classList.add("fade-out");
+    darkModeToggle.style.display = "none";
+    secureCurrentScore(score);
     fillAlphabet();
     updateUI(document.querySelector(".bad"));
     gameIsOn = true;
     readyToStart = false;
-    timer(10);
+    timer(30);
   } else if (alphabet.includes(pressedKey) && gameIsOn) {
     checkKeyNature(pressedKey);
   }
@@ -199,16 +219,19 @@ function callEndgame(scoreCheck) {
   if (scoreCheck) {
     endgame.classList.remove("fade-out");
     endgame.style.display = "flex";
-    finalScore.innerText = score;
 
     if (score > 0) {
+      endgameText.innerHTML = `Congratulations! You have reached
+      <span class="final-score">${score}</span> points.`;
+
       nameSubmit.style.display = "initial";
       nameSubmit.classList.remove("fade-out");
     } else {
+      endgameText.innerHTML = `Too sad... You've scored
+      <span class="final-score">${score}</span> points. Next time remember to use your keyboard 🙃`;
       callLeaderboard();
     }
   } else {
-    console.log("control failed");
     alert("FRAUD DETECTED : You are a cheater!");
     resetGame();
   }
@@ -254,9 +277,11 @@ restart.addEventListener("click", (e) => {
 
 function resetGame() {
   score = 0;
+  secureCurrentScore(score);
   scoreUI.innerText = score;
   timerUI.innerText = "--";
   comboCount = 0;
+  securedScore.delete();
   scoreUI.parentElement.classList.remove("combo-x2", "combo-x4");
   endgame.classList.add("fade-out");
   setTimeout(() => {
@@ -267,12 +292,7 @@ function resetGame() {
     startText.style.display = "block";
     leaderboard.parentElement.style.display = "none";
     leaderboard.innerHTML = "";
-    securedScore.delete();
+    darkModeToggle.style.display = "flex";
     readyToStart = true;
   }, 200);
 }
-// Debug this garbage !
-// setInterval(showScore, 1000);
-// function showScore() {
-//   console.log(`Hey, the score is ${score}`);
-// }
