@@ -142,6 +142,7 @@ body {
   border-radius: 6px;
   box-shadow: 1px 3px 2px #666;
   margin-top: 2em;
+  display: none;
 }
 
 .endgame form label {
@@ -260,7 +261,10 @@ body {
 }
 
 .leaderboard li:nth-of-type(odd) {
-  background-color: #f8f8f8;
+  background-color: #fcfcfc;
+}
+.leaderboard li:nth-of-type(even) {
+  background-color: #efefef;
 }
 
 .leaderboard-score {

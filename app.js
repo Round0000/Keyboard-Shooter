@@ -1,24 +1,13 @@
-const scores = db.collection("keyboard-shooter");
-
-function callLeaderboard() {
-  scores
-    .orderBy("score", "desc")
-    .limit(20)
-    .get()
-    .then((snapshot) => {
-      snapshot.docs.forEach((score) => {
-        const html = `
-    <li>
-      <span class="leaderboard-score">${score.data().score}</span>
-      <span class="leaderboard-name">${score.data().name}</span>
-    </li>
-    `;
-        leaderboard.innerHTML += html;
-      });
-    });
-  leaderboard.parentElement.style.display = "initial";
-  nameSubmit.style.display = "none";
+function play() {
+  resetGame();
+  document.location.reload();
+  securedScore.delete();
 }
+
+window.addEventListener("focus", play);
+
+const scores = db.collection("keyboard-shooter");
+const current = db.collection("keyboard-shooter-current");
 
 const alphabet = [
   "A",
@@ -65,6 +54,39 @@ let gameIsOn = false;
 let readyToStart = true;
 let score = 0;
 let comboCount = 0;
+const currentPlayer = random(999);
+const securedScore = current.doc(`${currentPlayer}`);
+
+function callLeaderboard() {
+  scores
+    .orderBy("score", "desc")
+    .limit(20)
+    .get()
+    .then((snapshot) => {
+      snapshot.docs.forEach((score) => {
+        const html = `
+    <li>
+      <span class="leaderboard-score">${score.data().score}</span>
+      <span class="leaderboard-name">${score.data().name}</span>
+    </li>
+    `;
+        leaderboard.innerHTML += html;
+      });
+    });
+  leaderboard.parentElement.style.display = "initial";
+  nameSubmit.style.display = "none";
+}
+
+function secureCurrentScore(score) {
+  current
+    .doc(`${currentPlayer}`)
+    .set({
+      score,
+    })
+    .catch((error) => {
+      console.error("Error writing document: ", error);
+    });
+}
 
 document.addEventListener("keyup", (e) => {
   const pressedKey = e.key.toUpperCase();
@@ -74,7 +96,7 @@ document.addEventListener("keyup", (e) => {
     updateUI(document.querySelector(".bad"));
     gameIsOn = true;
     readyToStart = false;
-    timer(30);
+    timer(10);
   } else if (alphabet.includes(pressedKey) && gameIsOn) {
     checkKeyNature(pressedKey);
   }
@@ -99,11 +121,13 @@ const checkKeyNature = (key) => {
   if (key === aim.innerText.toUpperCase()) {
     combo();
     aim.classList.add("anim-right-key");
+    secureCurrentScore(score);
   } else if (score > 0) {
     scoreUI.parentElement.classList.add("anim-wrong-key");
     comboCount = 0;
     scoreUI.parentElement.classList.remove("combo-x2", "combo-x4");
     score = score - 1;
+    secureCurrentScore(score);
     setTimeout(() => {
       scoreUI.parentElement.classList.remove("anim-wrong-key");
     }, 200);
@@ -129,6 +153,19 @@ function random(max) {
   return Math.floor(Math.random() * Math.floor(max));
 }
 
+function scoreCheck() {
+  return securedScore.get().then((doc) => {
+    const trueScore = doc.data().score;
+
+    if (trueScore === score) {
+      return true;
+    } else {
+      console.log("FRAUD DETECTED");
+      return false;
+    }
+  });
+}
+
 function timer(max) {
   const inter = setInterval(countdown, 1000);
   let time = max;
@@ -139,28 +176,41 @@ function timer(max) {
 
       container.classList.add("fade-out");
       header.classList.add("fade-out");
+
       setTimeout(() => {
         container.style.display = "none";
         header.style.display = "none";
 
-        endgame.classList.remove("fade-out");
-        endgame.style.display = "flex";
-
-        finalScore.innerText = score;
-
         gameIsOn = false;
 
-        if (score > 0) {
-          nameSubmit.style.display = "initial";
-          nameSubmit.classList.remove("fade-out");
-        } else {
-          callLeaderboard();
-        }
+        scoreCheck().then((result) => {
+          callEndgame(result);
+        });
       }, 500);
     } else {
       time--;
       timerUI.innerText = time;
     }
+  }
+}
+
+function callEndgame(scoreCheck) {
+  securedScore.delete();
+  if (scoreCheck) {
+    endgame.classList.remove("fade-out");
+    endgame.style.display = "flex";
+    finalScore.innerText = score;
+
+    if (score > 0) {
+      nameSubmit.style.display = "initial";
+      nameSubmit.classList.remove("fade-out");
+    } else {
+      callLeaderboard();
+    }
+  } else {
+    console.log("control failed");
+    alert("FRAUD DETECTED : You are a cheater!");
+    resetGame();
   }
 }
 
@@ -199,6 +249,10 @@ async function addScore(name, score) {
 restart.addEventListener("click", (e) => {
   e.preventDefault();
 
+  resetGame();
+});
+
+function resetGame() {
   score = 0;
   scoreUI.innerText = score;
   timerUI.innerText = "--";
@@ -213,10 +267,10 @@ restart.addEventListener("click", (e) => {
     startText.style.display = "block";
     leaderboard.parentElement.style.display = "none";
     leaderboard.innerHTML = "";
+    securedScore.delete();
     readyToStart = true;
   }, 200);
-});
-
+}
 // Debug this garbage !
 // setInterval(showScore, 1000);
 // function showScore() {
