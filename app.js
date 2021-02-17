@@ -43,7 +43,7 @@ const nameSubmit = document.querySelector(".endgame form");
 const restart = document.querySelector("#restart");
 let letters;
 
-let darkMode = false;
+let darkMode = localStorage.getItem("darkMode") ? true : false;
 let gameIsOn = false;
 let readyToStart = true;
 let score = 0;
@@ -59,16 +59,19 @@ function play() {
 
 window.addEventListener("focus", play);
 
-darkModeToggle.addEventListener("click", () => {
+darkModeToggle.addEventListener("click", (e) => {
   const toggleIcon = darkModeToggle.querySelector("img");
+  e.preventDefault();
 
   if (!darkMode) {
     darkMode = true;
+    localStorage.setItem("darkMode", true);
     document.querySelector("body").classList.add("darkmode");
     darkModeToggle.classList.toggle("rotate");
     toggleIcon.setAttribute("src", "./img/sun.svg");
   } else {
     darkMode = false;
+    localStorage.removeItem("darkMode");
     document.querySelector("body").classList.remove("darkmode");
     darkModeToggle.classList.toggle("rotate");
     toggleIcon.setAttribute("src", "./img/moon.svg");
@@ -108,7 +111,7 @@ function secureCurrentScore(score) {
 
 document.addEventListener("keyup", (e) => {
   const pressedKey = e.key.toUpperCase();
-  if (pressedKey === "ENTER" && !gameIsOn && readyToStart) {
+  if (pressedKey === "S" && !gameIsOn && readyToStart) {
     startText.classList.add("fade-out");
     darkModeToggle.style.display = "none";
     secureCurrentScore(score);

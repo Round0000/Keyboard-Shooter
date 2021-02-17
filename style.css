@@ -56,6 +56,11 @@ body {
   animation: start-text 1s infinite ease-in-out;
 }
 
+.start-text span {
+  color: crimson;
+  font-weight: bold;
+}
+
 @keyframes start-text {
   50% {
     transform: translateY(3px);
@@ -73,7 +78,7 @@ body {
   transition: all 0.5s;
 }
 
-.game-header span:last-child {
+.counter-display {
   color: #fcbf49;
   font-size: 2rem;
   border: 4px solid #f9dcc4;
